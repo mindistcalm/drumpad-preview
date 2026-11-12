@@ -1,6 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+}
 
 body {
   margin: 0;

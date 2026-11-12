@@ -1,0 +1,206 @@
+@property --hue-offset {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@keyframes sequencer-hue {
+  from { --hue-offset: 0; }
+  to { --hue-offset: 360; }
+}
+
+.sequencer {
+  --pad-size: clamp(44px, 4vw, 50px);
+  --step-gap: clamp(6px, 1vw, 8px);
+  --track-label-width: clamp(72px, 12vw, 100px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 3vw, 32px);
+  min-block-size: 100dvh;
+  padding: 16px clamp(12px, 2vw, 24px);
+}
+
+.sequencer-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 16px;
+  inline-size: max-content;
+  max-inline-size: 100%;
+  padding: 8px 16px;
+  color: white;
+}
+
+.sequencer-length {
+  display: flex;
+  flex: 1 1 240px;
+  align-items: center;
+  gap: 12px;
+  min-inline-size: 0;
+}
+
+.sequencer-length input {
+  flex: 1;
+  min-inline-size: 0;
+  min-block-size: 44px;
+  accent-color: #55b6e6;
+}
+
+.sequencer-controls button {
+  min-block-size: 44px;
+  margin-inline-start: auto;
+}
+
+.sequencer-scroll {
+  max-inline-size: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline-start: calc(var(--track-label-width) + var(--step-gap));
+  scrollbar-color: #687f8c #212121;
+  border-radius: 8px;
+}
+
+.sequencer-grid {
+  inline-size: max-content;
+  padding-block: 8px;
+  padding-inline-end: 4px;
+  animation: sequencer-hue 16.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sequencer-grid {
+    animation: none;
+  }
+}
+
+.sequencer-row,
+.sequencer-steps {
+  display: flex;
+  gap: var(--step-gap);
+}
+
+.sequencer-row + .sequencer-row {
+  margin-block-start: var(--step-gap);
+}
+
+.sequencer-label,
+.sequencer-number {
+  display: grid;
+  place-items: center;
+  font-size: clamp(0.875rem, 1.4vw, 1.25rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.sequencer-label {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  flex: 0 0 var(--track-label-width);
+  color: #55b6e6;
+  background: #282c34;
+}
+
+.sequencer-step {
+  flex: 0 0 var(--pad-size);
+  block-size: var(--pad-size);
+}
+
+.sequencer-step:nth-child(4n):not(:last-child) {
+  margin-inline-end: var(--step-gap);
+}
+
+.sequencer-pad {
+  --pad-color: hsl(calc(var(--hue-offset) + var(--pad-index) * var(--hue-step)) 100% 50%);
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  background-color: var(--pad-color);
+  box-shadow: 0 0 70px -5px var(--pad-color), 0 2px 4px -1px var(--pad-color);
+  border: 1px solid;
+}
+
+.sequencer-pad[aria-pressed="true"] {
+  --pad-color: #2c2c2c;
+}
+
+.sequencer-pad[data-active="true"] {
+  --pad-color: #eee;
+}
+
+.sequencer-pad[data-active="true"][aria-pressed="true"] {
+  --pad-color: #aaa;
+}
+
+.sequencer :focus-visible {
+  outline: 2px solid #8ddef2;
+  outline-offset: -2px;
+}
+
+@media (min-width: 480px) {
+  .sequencer-controls {
+    flex-wrap: nowrap;
+    padding-inline: 24px;
+  }
+
+  .sequencer-length {
+    flex: 0 0 auto;
+  }
+}
+
+.sequencer-tracks {
+  max-inline-size: 100%;
+}
+
+.sequencer-tracks--paged {
+  inline-size: min(100%, 420px);
+}
+
+.sequencer-tracks--paged .sequencer-scroll {
+  overflow: visible;
+}
+
+.sequencer-tracks--paged .sequencer-grid {
+  inline-size: 100%;
+  padding-inline-end: 0;
+}
+
+.sequencer-tracks--paged .sequencer-steps {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.sequencer-groups {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.sequencer-groups button {
+  position: relative;
+  min-block-size: 44px;
+  border-radius: 8px;
+  background: #212121;
+  color: #e7e7e7;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sequencer-groups button[aria-pressed="true"] {
+  background: #164f62;
+  color: white;
+}
+
+.sequencer-groups button[data-playing="true"]::after {
+  position: absolute;
+  inset-inline: calc(50% - 6px);
+  inset-block-end: 5px;
+  block-size: 2px;
+  border-radius: 2px;
+  background: #8ddef2;
+  content: "";
+}
